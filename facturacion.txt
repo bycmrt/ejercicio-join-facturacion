@@ -1,0 +1,69 @@
+drop table if exists clientes;
+CREATE TABLE clientes(
+    idcliente varchar(12) PRIMARY key,
+    nombre varchar(50),
+    apellido varchar(50),
+    direccion varchar(50),
+    telefono varchar(11),
+    fechaNacimiento date,
+    email varchar (50)
+    );
+    
+    CREATE TABLE ModoPago(
+    idpago int (12) PRIMARY key,
+    descripcion varchar(50),
+    otrosDetalles varchar(50)
+        );
+
+    
+    CREATE TABLE Factura(
+    idFactura int (5) ZEROFILL PRIMARY key AUTO_INCREMENT,
+    idclientes varchar(12),
+    idpago  int (12),
+    fecha date,
+    FOREIGN KEY (idclientes) REFERENCES clientes(idcliente),
+    FOREIGN KEY (idpago) REFERENCES ModoPago(idpago)
+    );
+    
+    CREATE TABLE Categoria(
+    idcategoria varchar(12) PRIMARY key,
+    nombre varchar(50),
+ 	descripcion varchar(50)
+    );
+    
+    CREATE TABLE Producto(
+    idProducto int (5) ZEROFILL PRIMARY key AUTO_INCREMENT,
+    nombre varchar(50),
+    precio int,
+    stock int,
+    idcategoria varchar(12),
+    FOREIGN KEY (idcategoria) REFERENCES categoria(idcategoria)
+    );
+     
+    CREATE TABLE Detalle(
+    numDetalle int (5), 
+    idFactura int(5) ZEROFILL,
+    idProducto int (5) ZEROFILL,
+    cantidad INT,
+    precio int,
+    PRIMARY KEY (numDetalle,idFactura),
+    FOREIGN KEY (idFactura) REFERENCES Factura(idFactura),
+    FOREIGN KEY (idProducto) REFERENCES Producto(idProducto)
+    );
+
+
+
+
+
+/*consulta y union*/
+
+/*Ejemplo de consulta de multiples tablas */
+select factura.idFactura,clientes.idcliente, clientes.nombre, 
+    clientes.apellido, modopago.idpago, modopago.descripcion, 
+    fecha, detalle.idProducto, producto.nombre, categoria.nombre
+from factura
+join modopago on modopago.idpago = factura.idpago
+join clientes on clientes.idcliente = factura.idcliente
+join detalle on detalle.idFactura = factura.idFactura
+join producto on producto.idproducto = detalle.idProducto
+join categoria on categoria.idcategoria = producto.idcategoria
